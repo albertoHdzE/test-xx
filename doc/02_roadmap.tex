@@ -1,0 +1,165 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.54cm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{pgfgantt}
+\usepackage{booktabs}
+\usepackage{array}
+
+\title{Project-X: Development Roadmap}
+\author{}
+\date{July 21, 2025}
+
+\begin{document}
+
+\maketitle
+
+This document outlines the roadmap for the Project-X agent-based architecture, detailing milestones, timelines, and dependencies to guide development from MVP to full real-data integration, supporting use cases such as fraud detection, supply chain optimisation, and customer analytics.
+
+\section{Roadmap}
+The following roadmap is defined in blocks of one week, starting Monday, 21 July 2025, and concluding on Friday, 29 August 2025.
+
+\begin{ganttchart}[
+    x unit=2cm,
+    y unit title=0.5cm,
+    y unit chart=0.7cm,
+    vgrid={*{7}{draw=none}, {draw}},
+    hgrid,
+    title height=1,
+    bar height=0.7,
+    bar label font=\small,
+    bar/.append style={fill=blue!50},
+    group right shift=0,
+    group top shift=0.7,
+    group height=.3,
+    group label font=\small,
+    group/.append style={fill=blue!20}
+]{1}{6}
+    \gantttitle{2025}{6} \\
+    \gantttitlelist{1,2,3,4,5,6}{1} \\
+    \ganttgroup{MVP Development}{1}{1} \\
+    \ganttbar{Basic Agent Functionality}{1}{1} \ganttnewline
+    \ganttbar{Synthetic Data Integration}{1}{1} \ganttnewline
+    \ganttgroup{Validation}{2}{2} \\
+    \ganttbar{Validation Strategies}{2}{2} \ganttnewline
+    \ganttlink[link type=f-s]{elem1}{elem3} % Linking Basic Agent Functionality to Validation Strategies
+    \ganttgroup{Performance Testing}{3}{3} \\
+    \ganttbar{Stress Testing}{3}{3} \ganttnewline
+    \ganttlink[link type=f-s]{elem3}{elem5} % Linking Validation Strategies to Stress Testing
+    \ganttgroup{Integration}{4}{4} \\
+    \ganttbar{Real-Time Data Integration}{4}{4} \ganttnewline
+    \ganttlink[link type=f-s]{elem5}{elem7} % Linking Stress Testing to Real-Time Data Integration
+    \ganttgroup{Post-MVP Enhancements}{5}{6} \\
+    \ganttbar{Visual LangGraph Editor}{5}{5} \ganttnewline
+    \ganttbar{API Design and Test}{6}{6} \ganttnewline
+    \ganttlink[link type=f-s]{elem7}{elem9} % Linking Real-Time Data Integration to Visual LangGraph Editor
+    \ganttlink[link type=f-f]{elem9}{elem10} % Linking Visual LangGraph Editor to API Design and Test
+\end{ganttchart}
+
+\section{Roadmap Stage Descriptions}
+This section provides an overview of each stage in the Project-X development roadmap, elucidating the objectives and expected outputs. The descriptions are structured to guide developers through the sequential progression of the agent-based architecture, ensuring clarity and alignment with the project’s goal of delivering a functional minimum viable product (MVP) within six weeks. Each stage builds upon the previous, culminating in a cohesive system capable of processing datasets, generating synthetic data, training machine learning models, applying business rules, and delivering comprehensive reports.
+
+\subsection{MVP Development (Week 1)}
+\textbf{Objective}: Implement the core functionality of all eight agents (User Prompt Parser, Code Generation for Synthetic Data, EDA, PyCaret Model Running, Model and Results Interpreter, Business Rule, Configuration, Report Formatter) independently, ensuring each operates correctly in isolation outside the LangGraph environment. This includes developing synthetic data generation capabilities to support subsequent pipeline stages.
+
+\textbf{Tasks}:
+\begin{itemize}[label=--]
+    \item \textbf{Basic Agent Functionality}: Develop the standalone logic for each agent using Python and pre-trained Ollama models, ensuring individual functionality for tasks such as prompt parsing, model training, and report generation.
+    \item \textbf{Synthetic Data Integration}: Implement the Code Generation for Synthetic Data Agent to produce well-formed synthetic datasets based on user-specified descriptions, ensuring compatibility with downstream analysis.
+\end{itemize}
+
+\textbf{Expected Outputs}:
+\begin{itemize}[label=--]
+    \item Functional agents, each producing standalone outputs, including:
+    \begin{itemize}[label=$\circ$]
+        \item JSON configurations from the User Prompt Parser Agent (e.g., \texttt{\{"columns": [\{"name": "transaction\_id", "type": "int"\}, \{"name": "is\_fraud", "type": "bool"\}], "target": "is\_fraud", "rows": 1000\}}).
+        \item Synthetic datasets in CSV format from the Code Generation Agent (e.g., \texttt{data.csv} with columns like \texttt{transaction\_id, amount, country, is\_fraud}).
+        \item JSON reports from the EDA Agent (e.g., \texttt{\{"columns": [...], "target\_suitable": true\}}).
+        \item Trained models (e.g., \texttt{model.pkl}), metrics (e.g., \texttt{\{"accuracy": 0.85\}}), and plots (e.g., \texttt{confusion\_matrix.png}) from the PyCaret Model Running Agent.
+        \item JSON performance reports from the Model and Results Interpreter Agent.
+        \item Modified datasets (e.g., \texttt{data\_ruled.csv}) and rule summaries from the Business Rule Agent.
+        \item JSON configurations from the Configuration Agent (e.g., \texttt{\{"pycaret\_model": "random\_forest"\}}).
+        \item Unified JSON reports from the Report Formatter Agent.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Validation (Week 2)}
+\textbf{Objective}: Ensure seamless integration of all agents within the LangGraph pipeline by synchronising their inputs and outputs, validating that each agent correctly processes the previous agent’s output to produce usable results for the next.
+
+\textbf{Tasks}:
+\begin{itemize}[label=--]
+    \item \textbf{Validation Strategies}: Integrate all agents into the LangGraph environment, testing the flow of data through the pipeline (e.g., JSON prompts to synthetic datasets to model training) to confirm compatibility and correctness of input-output handoffs.
+\end{itemize}
+
+\textbf{Expected Outputs}:
+\begin{itemize}[label=--]
+    \item A fully integrated LangGraph pipeline with all eight agents, producing a cohesive sequence of outputs, including JSON configurations, synthetic datasets, EDA reports, trained models, performance metrics, rule-applied datasets, configuration files, and unified reports, validated for the five predefined use cases.
+\end{itemize}
+
+\subsection{Performance Testing (Week 3)}
+\textbf{Objective}: Evaluate the performance and robustness of the integrated pipeline by conducting stress tests across the five predefined use cases, ensuring reliability under varying conditions.
+
+\textbf{Tasks}:
+\begin{itemize}[label=--]
+    \item \textbf{Stress Testing}: Execute the integrated pipeline, including the PyCaret Model Running Agent, on the five use cases (e.g., fraud detection, customer analytics), assessing performance metrics and system stability under different dataset sizes and complexities.
+\end{itemize}
+
+\textbf{Expected Outputs}:
+\begin{itemize}[label=--]
+    \item Validated pipeline outputs, including saved machine learning models (e.g., \texttt{model.pkl}), performance metrics in JSON format (e.g., \texttt{\{"accuracy": 0.85, "auc": 0.90\}}), and visualisation plots (e.g., \texttt{confusion\_matrix.png}), confirming robustness across use cases.
+\end{itemize}
+
+\subsection{Integration (Week 4)}
+\textbf{Objective}: Incorporate domain-specific business rules into the pipeline to enhance dataset utility and align with use case requirements.
+
+\textbf{Tasks}:
+\begin{itemize}[label=--]
+    \item \textbf{Real-Time Data Integration}: Deploy the Business Rule Agent to apply predefined business rules (e.g., flagging transactions based on country or amount thresholds) to datasets, generating modified datasets with rule-based annotations.
+\end{itemize}
+
+\textbf{Expected Outputs}:
+\begin{itemize}[label=--]
+    \item Modified datasets in CSV format (e.g., \texttt{data\_ruled.csv} with additional columns like \texttt{suspicious}) and JSON rule summaries (e.g., \texttt{\{"rule": "Flag transactions from countries X, Y", "impact": "10\% transactions flagged"\}}).
+\end{itemize}
+
+\subsection{Post-MVP Enhancements (Weeks 5--6)}
+\textbf{Objective}: Augment the system with advanced functionalities and finalise the integration of an API to deliver comprehensive, user-accessible outputs.
+
+\textbf{Tasks}:
+\begin{itemize}[label=--]
+    \item \textbf{Visual LangGraph Editor}: Develop the Configuration Agent to provide a text-based interface for adjusting parameters (e.g., model types, rule thresholds), enhancing system flexibility and user interaction.
+    \item \textbf{API Design and Test}: Implement the Model and Results Interpreter and Report Formatter Agents to produce unified reports and validate the API for seamless delivery of pipeline outputs.
+\end{itemize}
+
+\textbf{Expected Outputs}:
+\begin{itemize}[label=--]
+    \item Configuration JSON files (e.g., \texttt{\{"pycaret\_model": "random\_forest", "fraud\_threshold": 500\}}) generated by the Configuration Agent.
+    \item Unified JSON reports (e.g., \texttt{\{"eda": \{...\}, "model": \{"accuracy": 0.85\}, "rules": \{...\}, "summary": "Robust system for fraud detection"\}}) and a validated API for report delivery.
+\end{itemize}
+
+\section{Team Composition}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|>{\raggedright\arraybackslash}p{0.2\textwidth}|>{\raggedright\arraybackslash}p{0.3\textwidth}|>{\raggedright\arraybackslash}p{0.2\textwidth}|>{\raggedright\arraybackslash}p{0.3\textwidth}|}
+\hline
+\textbf{Name} & \textbf{Role} & \textbf{Agent} & \textbf{Comments} \\ \hline
+Rafael & ML and APIs for Models, AI-Dev & *** &  \\ \hline
+Andrés & Frontend, AI-Dev & *** &  \\ \hline
+Carlos & Frontend, AI-Dev & *** & Integrator \\ \hline
+Mauricio & Backend, AI-Dev & *** &  \\ \hline
+Johnattan & DevOps, AI-Dev & *** &  \\ \hline
+Gastón & Tech Lead, AI-Dev & *** &  \\ \hline
+Jan & AI--developer & *** &  \\ \hline
+Enrique & AI--developer & *** &  \\ \hline
+\end{tabular}
+\caption{Team Members and Assigned Agents}
+\end{table}
+
+\end{document}
